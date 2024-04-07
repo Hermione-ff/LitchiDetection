@@ -56,6 +56,20 @@ sys.path.append(r'D:\project\LitchiDetection\sahi-main\'sahi')
 ##替换Quality focal loss函数
 - 在yolo/utils/loss.py下添加新的focal_loss的代码
 - 在loss.py中找到DetectionLoss类定义focal_loss变量
+- 经过测试发现效果不如之前,换回交叉熵损失
+
+##在C2f中加入Biformer
+- pip install einops
+- 在nn/modules中加入biformer.py
+- 在block中添加C2fattention2以及在init中导入
+- 在task的parse_model中注册
+- 修改cfg的配置文件
+- 效果不如之前,用回原来的c2f模块
+
+##添加SegNext_attention
+- 在conv.py中添加segnext_attention
+- 在init中注册
+- 在task中引入,parse_model中注册
 
 
 

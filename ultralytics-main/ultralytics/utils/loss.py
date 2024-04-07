@@ -423,7 +423,7 @@ class v8DetectionLoss:
         # self.bce = Focal_Loss(nn.BCEWithLogitsLoss(reduction='none')) # Focal
         # self.bce = Vari_focalLoss() # VFLoss
         # self.bce = SlideLoss(nn.BCEWithLogitsLoss(reduction='none')) # SlideLoss
-        self.bce = QualityfocalLoss()  # 目前仅持者目标检测需要注意！
+        # self.bce = QualityfocalLoss()  # 目前仅持者目标检测需要注意！
         self.hyp = h
         self.stride = m.stride  # model strides
         self.nc = m.nc  # number of classes

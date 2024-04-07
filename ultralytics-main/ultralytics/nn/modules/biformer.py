@@ -161,6 +161,7 @@ class BiLevelRoutingAttention(nn.Module):
             self.wo = nn.Identity()
         else:
             raise ValueError(f'param_attention mode {self.param_attention} is not surpported!')
+
         self.kv_downsample_mode = kv_downsample_mode
         self.kv_per_win = kv_per_win
         self.kv_downsample_ratio = kv_downsample_ratio
