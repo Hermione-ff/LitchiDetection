@@ -163,6 +163,20 @@ class SlicedImage:
 
 
 class SliceImageResult:
+    '''
+    这个类名为 SliceImageResult，用于保存切割后的图像结果。下面是该类的解析：
+
+    __init__(self, original_image_size: List[int], image_dir: Optional[str] = None): 构造函数接受两个参数，original_image_size 是未切割的原始图像的尺寸，以列表形式给出 [height, width]，image_dir 是切割图像导出的目录，默认为 None。
+    add_sliced_image(self, sliced_image: SlicedImage): 添加一个切割后的图像对象到结果中。
+    sliced_image_list: 返回切割后的图像列表。
+    images: 返回切割后的图像数组列表。
+    coco_images: 返回切割后的图像的 CocoImage 对象列表。
+    starting_pixels: 返回每个切片的起始像素坐标的列表。
+    filenames: 返回每个切片的文件名列表。
+    __getitem__(self, i): 支持通过索引访问切片结果。可以通过整数索引访问单个切片，也可以通过切片对象访问多个切片，还可以通过元组或列表同时访问多个切片。
+    __len__(self): 返回切片结果列表的长度。
+    这个类主要用于存储切割后的图像结果，以及提供一些便利的方法来访问和操作这些结果，例如获取图像数组、CocoImage 对象等。
+    '''
     def __init__(self, original_image_size: List[int], image_dir: Optional[str] = None):
         """
         image_dir: str
@@ -310,6 +324,32 @@ def slice_image(
                                     Size of the unsliced original image in [height, width]
         num_total_invalid_segmentation: int
             Number of invalid segmentation annotations.
+    这个函数名为 slice_image，它的作用是将一个大的图像切割成小块。如果提供了 output_file_name，则会导出切割后的图像。
+
+    image: 图像，可以是文件路径或 Pillow 图像对象。
+    coco_annotation_list: CocoAnnotation 对象的列表，可选。用于提供图像的注释信息。
+    output_file_name: 输出文件名的根部分，可选。切割后的图像将以这个文件名为基础进行命名。
+    output_dir: 输出目录，可选。切割后的图像将保存在这个目录下。
+    slice_height: 每个切片的高度，可选。
+    slice_width: 每个切片的宽度，可选。
+    overlap_height_ratio: 切片高度的重叠比例，默认为 0.2。
+    overlap_width_ratio: 切片宽度的重叠比例，默认为 0.2。
+    auto_slice_resolution: 如果设置为 True，则会自动从图像分辨率和方向计算切片参数。
+    min_area_ratio: 如果裁剪后的注释区域与原始注释区域的比例小于此值，则过滤掉该注释。默认为 0.1。
+    out_ext: 保存图像的扩展名，可选。默认为原始格式的后缀对于无损格式，对于有损格式为 '.jpg', '.jpeg'。
+    verbose: 是否打印相关值到屏幕上，默认为 False。
+    函数返回一个 SliceImageResult 对象，其中包含切割后的图像列表、图像目录和原始图像的尺寸信息。
+
+    函数内部主要进行以下操作：
+
+    根据参数设置是否打印日志。
+    如果提供了输出目录，则创建该目录。
+    读取输入的图像。
+    计算切片的位置和大小。
+    迭代每个切片，提取图像并根据需要添加注释。
+    导出切片图像，如果提供了输出目录和文件名。
+    返回切割后的图像列表和相关信息。
+    此函数使用了一些辅助函数，如 _export_single_slice 用于导出单个切片图像，以及其他一些工具函数用于处理图像和注释数据。
     """
 
     # define verboseprint
@@ -455,6 +495,18 @@ def slice_coco(
             COCO dict for sliced images and annotations
         save_path: str
             Path to the saved coco file
+    coco_annotation_file_path: COCO 格式的注释文件路径。
+    image_dir: 存放图像文件的目录。
+    output_coco_annotation_file_name: 导出的新的 COCO 格式的注释文件名。
+    output_dir: 导出文件的目录，可选。
+    ignore_negative_samples: 是否忽略没有注释的图像，默认为 False。
+    slice_height: 每个切片的高度，默认为 512。
+    slice_width: 每个切片的宽度，默认为 512。
+    overlap_height_ratio: 每个切片高度的重叠比例，默认为 0.2。
+    overlap_width_ratio: 每个切片宽度的重叠比例，默认为 0.2。
+    min_area_ratio: 如果裁剪后的注释区域与原始注释区域的比例小于此值，则过滤掉该注释，默认为 0.1。
+    out_ext: 导出图像的文件扩展名，可选。
+    verbose: 是否打印相关值到屏幕上，默认为 False。
     """
 
     # read coco file

@@ -5,9 +5,9 @@ from sahi.slicing import slice_coco
 
 
 # coco图像集地址
-image_path = r"D:\project\LitchiDetection\data\leaves_photos\val"
+image_path = r"E:\毕业论文\leaves_photos\train"
 # coco标注文件
-coco_annotation_file_path=r"D:\project\LitchiDetection\data\leaves_labels\valcoco.json"
+coco_annotation_file_path=r"E:\毕业论文\leaves_labels\traincoco.json"
 # 加载数据集
 coco_dict = load_json(coco_annotation_file_path)
 
@@ -16,7 +16,7 @@ coco_dict = load_json(coco_annotation_file_path)
 # 保存的coco数据集标注文件名
 output_coco_annotation_file_name = "sliced"
 # 输出文件夹
-output_dir = "valsult"
+output_dir = "trainsult"
 
 # 切分数据集
 coco_dict, coco_path = slice_coco(
@@ -25,10 +25,10 @@ coco_dict, coco_path = slice_coco(
     output_coco_annotation_file_name=output_coco_annotation_file_name,
     ignore_negative_samples=False,
     output_dir=output_dir,
-    slice_height=1600,
-    slice_width=1600,
-    overlap_height_ratio=0.2,
-    overlap_width_ratio=0.2,
+    slice_height=1334,
+    slice_width=1334,
+    overlap_height_ratio=0.25,
+    overlap_width_ratio=0,
     min_area_ratio=0.2,
     verbose=False
 )

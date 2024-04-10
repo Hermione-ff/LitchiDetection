@@ -24,9 +24,9 @@ sys.path.append(r'D:\project\LitchiDetection\sahi-main\'sahi')
 - 标注完数据后,将图片与json文件全部放到一个文件夹里。
 ###划分数据集
 - 使用脚本将文件夹里的数据按7:2:1划分为训练集,验证集,测试集,脚本文件是data/split_datasets.py
-- 划分数据集后对三个文件夹先进行图片与json分开,在对json进行转coco格式，使用labelme2coco.py
+- 划分数据集后对三个文件夹先进行图片与json分开(创建两个文件夹,label和image,都按之前分好的数据集),在对json进行转coco格式，使用labelme2coco.py,最终形成三个json文件
 ###切分数据集
-- 对coco格式的标注文件进行sahi切片，选择切片大小为1600X1600,使用slice_coco.py
+- 对coco格式的标注文件进行sahi切片，选择切片大小为1334X1334,使用slice_coco.py
 - 最后,转回yolo格式,使用coco2yolo.py
 ###完成数据集
 - 最后将切片后的数据集放入dataset/Litchi中。
