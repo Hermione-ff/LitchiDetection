@@ -139,6 +139,7 @@ def get_sliced_prediction(
     verbose: int = 1,
     merge_buffer_length: int = None,
     auto_slice_resolution: bool = True,
+    get_slice_result = False,
 ) -> PredictionResult:
     """
     Function for slice image + get predicion for each slice + combine predictions in full image.
@@ -189,6 +190,31 @@ def get_sliced_prediction(
         A Dict with fields:
             object_prediction_list: a list of sahi.prediction.ObjectPrediction
             durations_in_seconds: a dict containing elapsed times for profiling
+
+    参数：
+
+    image: 输入的图像，可以是图像的路径或者是一个numpy数组。
+    detection_model: 检测模型，用于对图像进行物体检测。
+    output_file_name: （可选）切片后的图像保存路径。
+    interim_dir: （可选）中间切片图像保存的目录。
+    slice_height 和 slice_width: 每个切片的高度和宽度。
+    overlap_height_ratio 和 overlap_width_ratio: 切片之间的重叠部分的比例。
+    perform_standard_pred: 是否在切片预测之后执行标准预测，以增加对大物体的检测准确性。
+    postprocess_type: 切片预测后进行合并/消除预测时要使用的后处理类型。
+    postprocess_match_metric: 预测匹配时使用的度量标准。
+    postprocess_match_threshold: 预测匹配阈值。
+    postprocess_class_agnostic: 是否忽略类别标识。
+    verbose: 是否输出详细信息。
+    merge_buffer_length: 用于切片预测的缓冲区长度，适用于内存较低的情况。
+    auto_slice_resolution: 是否自动计算切片参数（高度和宽度）。
+    函数内部逻辑：
+
+    首先，函数会调用 slice_image 函数对输入图像进行切片，并获取切片结果。
+    然后，根据切片结果逐个对切片进行预测，将预测结果存储在 object_prediction_list 中。
+    如果指定了 merge_buffer_length，并且 object_prediction_list 中的预测结果数量超过了缓冲区长度，则会调用后处理函数对预测结果进行合并。
+    如果 perform_standard_pred 为真且切片数量大于1，则会对完整图像进行一次标准预测，并将其结果添加到 object_prediction_list 中。
+    最后，对 object_prediction_list 中的所有预测结果进行最终的合并操作，并返回包含图像、预测结果和执行时间的 PredictionResult 对象。
+    这个函数的核心思想是通过切片的方式来处理大尺寸图像，以降低计算复杂度，并在切片预测的基础上，通过后处理来合并和消除重叠的预测结果，从而得到最终的物体检测结果。
     """
 
     # for profiling
@@ -233,6 +259,7 @@ def get_sliced_prediction(
     if verbose == 1 or verbose == 2:
         tqdm.write(f"Performing prediction on {num_slices} number of slices.")
     object_prediction_list = []
+    slice_result = []
     # perform sliced prediction
     for group_ind in range(num_group):
         # prepare batch (currently supports only 1 batch)
@@ -251,6 +278,7 @@ def get_sliced_prediction(
                 slice_image_result.original_image_width,
             ],
         )
+        slice_result.append(prediction_result)
         # convert sliced predictions to full predictions
         for object_prediction in prediction_result.object_prediction_list:
             if object_prediction:  # if not empty
@@ -289,10 +317,12 @@ def get_sliced_prediction(
             durations_in_seconds["prediction"],
             "seconds.",
         )
-
-    return PredictionResult(
-        image=image, object_prediction_list=object_prediction_list, durations_in_seconds=durations_in_seconds
-    )
+    if not get_slice_result:
+        return PredictionResult(
+            image=image, object_prediction_list=object_prediction_list, durations_in_seconds=durations_in_seconds
+        )
+    else:
+        return PredictionResult(image=image, object_prediction_list=object_prediction_list, durations_in_seconds=durations_in_seconds) , slice_result
 
 
 def bbox_sort(a, b, thresh):

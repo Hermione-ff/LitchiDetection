@@ -7,6 +7,7 @@ from PIL import Image
 
 from sahi import AutoDetectionModel
 from sahi.predict import get_sliced_prediction
+from predict_res.slice_predict import concatenate_images
 
 
 @st.cache_resource
@@ -59,15 +60,22 @@ def infer_uploaded_image(model):
             st_frame = st.empty()
             with st.spinner("Running..."):
                 # 使用切片检测模型检测图片
-                result = get_sliced_prediction(
+                result, slice_res = get_sliced_prediction(
                     uploaded_image,
                     model,
-                    slice_height=1600,
-                    slice_width=1600,
-                    overlap_height_ratio=0.2,
-                    overlap_width_ratio=0.2,
-                    perform_standard_pred=True,
+                    slice_height=1334,
+                    slice_width=1334,
+                    overlap_height_ratio=0.25,
+                    overlap_width_ratio=0,
+                    perform_standard_pred=False,
+                    get_slice_result=True,
                 )
+                #预测切片大图
+                sliced_images = [sli_res.export_visuals() for sli_res in slice_res]
+                image_list = [Image.fromarray(sliced_image['image']) for sliced_image in sliced_images]
+                big_image = concatenate_images(image_list=image_list, image_size=(1334, 1334), num_cols=3, num_rows=3,
+                                               spacing=20)
+                #预测结果大图
                 res_plotted = result.export_visuals()['image']
                 res_times = result.export_visuals()['elapsed_time']
                 res_class_num = result.count_predictions_by_class() #统计各个类别的数目,返回一个字典
@@ -76,10 +84,16 @@ def infer_uploaded_image(model):
                 exc_time = f"Execution Time: {res_times:.2f} seconds"
                 try:
                     st_count.write(num_leaves + '\n\n' + fade_degree + '\n\n' + exc_time)
-                    st_frame.image(res_plotted,
-                             caption="Detected Image",
-                             use_column_width=True,
-                             width=1200,
+                    st_frame.image(big_image,
+                                   caption="Sliced Image",
+                                   use_column_width=True,
+                                   width=1200,
+                                   )
+                    st_image = st.empty()
+                    st_image.image(res_plotted,
+                                   caption="Detected Image",
+                                   use_column_width=True,
+                                   width=1200,
                                    )
                 except Exception as ex:
                     st.write("No image is uploaded yet!")
