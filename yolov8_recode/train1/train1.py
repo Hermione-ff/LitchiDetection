@@ -7,7 +7,7 @@ def train_yolov8():
     data_cfg = r'D:\project\LitchiDetection\data\dataset\Litchi.yaml'  # 数据集配置文件
     # pretrained_cfg = r'yolov8m.pt'   不采用预训练
     epochs = '100'  # 训练轮次
-    batch_size = '4'  # 批次大小
+    batch_size = '8'  # 批次大小
     imgsz = '640'
     learning_rate = '0.01'  # 初始学习率
     device = '0'  # 使用的设备编号，'0' 表示第一个GPU，'cpu' 表示使用CPU
