@@ -23,7 +23,7 @@ sys.path.append(r'D:\project\LitchiDetection\sahi-main\'sahi')
 ###初始数据集
 - 标注完数据后,将图片与json文件全部放到一个文件夹里。
 ###划分数据集
-- 使用脚本将文件夹里的数据按7:2:1划分为训练集,验证集,测试集,脚本文件是data/split_datasets.py
+- 使用脚本将文件夹里的数据按7:3划分为训练集,验证集,脚本文件是data/split_datasets.py
 - 划分数据集后对三个文件夹先进行图片与json分开(创建两个文件夹,label和image,都按之前分好的数据集),在对json进行转coco格式，使用labelme2coco.py,最终形成三个json文件
 ###切分数据集
 - 对coco格式的标注文件进行sahi切片，选择切片大小为1334X1334,使用slice_coco.py
@@ -36,6 +36,12 @@ sys.path.append(r'D:\project\LitchiDetection\sahi-main\'sahi')
 ##训练
 - 每一次的训练脚本,参数,结果都放在yolov8/recode下
 - 模型的配置参数放在cfg/v8/yolov8-Litchi.yaml中
+
+###训练记录
+- new_train1 使用原生yolov8s模型训练大图
+- new_train2 使用原生yolov8s模型训练切分后的小图
+- new_train3 使用添加注意力机制后的yolov8s-Litchi模型训练切分后的小图
+- new_train4 使用添加注意力机制后的yolov8s-Litchi模型以及MPDiou损失函数训练切分后的小图
 
 
 ##模型修改
@@ -53,12 +59,12 @@ sys.path.append(r'D:\project\LitchiDetection\sahi-main\'sahi')
 - 修改在ultralytics/yolo/utils/loss.py中BboxLoss类的forward函数：
 - 由于YOLOv8中在标签分配规则中也有用到bbox_iou的函数，所以需要修改ultralytics/yolo/utils/tal.py的TaskAlignedAssigner类中的get_box_metrics函数
 
-##替换Quality focal loss函数
+###替换Quality focal loss函数
 - 在yolo/utils/loss.py下添加新的focal_loss的代码
 - 在loss.py中找到DetectionLoss类定义focal_loss变量
 - 经过测试发现效果不如之前,换回交叉熵损失
 
-##在C2f中加入Biformer
+###在C2f中加入Biformer
 - pip install einops
 - 在nn/modules中加入biformer.py
 - 在block中添加C2fattention2以及在init中导入
@@ -66,7 +72,7 @@ sys.path.append(r'D:\project\LitchiDetection\sahi-main\'sahi')
 - 修改cfg的配置文件
 - 效果不如之前,用回原来的c2f模块
 
-##添加SegNext_attention
+###添加SegNext_attention
 - 在conv.py中添加segnext_attention
 - 在init中注册
 - 在task中引入,parse_model中注册

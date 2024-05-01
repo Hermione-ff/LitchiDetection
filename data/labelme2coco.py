@@ -69,6 +69,6 @@ def labelme_to_coco(labelme_json_folder, save_path):
 
 if __name__ == '__main__':
     # # 使用示例
-    labelme_json_folder = r"E:\毕业论文\leaves_labels\val"
-    save_path = r"E:\毕业论文\leaves_labels\valcoco.json"
+    labelme_json_folder = r"E:\毕业论文\leaves_labels\train"
+    save_path = r"E:\毕业论文\leaves_labels\traincoco.json"
     labelme_to_coco(labelme_json_folder, save_path)
