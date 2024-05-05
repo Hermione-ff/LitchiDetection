@@ -24,14 +24,16 @@ SOURCES_LIST = ["Image"]
 DETECTION_MODEL_DIR = ROOT / 'weights'
 YOLOv8n = DETECTION_MODEL_DIR / "yolov8n.pt"
 YOLOv8s = DETECTION_MODEL_DIR / "yolov8s.pt"
-YOLOv8s_Litchi_1600 = DETECTION_MODEL_DIR / "yolov8s-Litchi-1600.pt"
-YOLOv8s_Litchi_1334 = DETECTION_MODEL_DIR / "yolov8s-Litchi-1334.pt"
+YOLOv8s_Litchi = DETECTION_MODEL_DIR / "yolov8s-Litchi-best.pt"
+YOLOv8s_Litchi_1334 = DETECTION_MODEL_DIR / "yolov8s-Litchi-1334-best.pt"
+YOLOv8s_Litchi_1600 = DETECTION_MODEL_DIR / "yolov8s-Litchi-1600-best.pt"
 
 DETECTION_MODEL_LIST = [
     "yolov8n.pt",
     "yolov8s.pt",
-    "yolov8s-Litchi-1600.pt",
-    "yolov8s-Litchi-1334.pt",
+    "yolov8s-Litchi-best.pt",
+    "yolov8s-Litchi-1334-best.pt",
+    "yolov8s-Litchi-1600-best.pt",
     ]
 
 

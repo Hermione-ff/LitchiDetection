@@ -59,6 +59,6 @@ source_selectbox = st.sidebar.selectbox(
 
 source_img = None
 if source_selectbox == config.SOURCES_LIST[0]: # 图片
-    infer_uploaded_image(slice_model)
+    infer_uploaded_image(slice_model,model_type)
 else:
     st.error("Currently only 'Image' source are implemented")
